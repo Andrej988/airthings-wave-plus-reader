@@ -1,4 +1,4 @@
-# Airthings Wave Plus Reader 
+# Airthings Wave Plus Reader/Publisher
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Application which periodically reading Airthings Wave Plus sensor measurement over Bluetooth Low Energy (BLE) and publish them to MQTT and/or Apache Kafka.
@@ -10,13 +10,13 @@ This project was inspired by:
 * https://github.com/custom-components/sensor.airthings_wave
 
 **Table of contents**
-- [Airthings Wave Plus Reader/Publisher](#airthings-wave-plus-reader)
+- [Airthings Wave Plus Reader/Publisher](#airthings-wave-plus-readerpublisher)
 - [Sensor data description](#sensor-data-description)
 - [Prerequisites](#prerequisites)
 - [Python Dependencies](#python-dependencies)
 - [BLE Scanning](#ble-scanning)
 - [Configuration](#configuration)
-- [Output message format](#output-message-format)
+- [Output message format/example](#output-message-formatexample)
 - [Testing](#testing)
 - [License](#license)
 
@@ -143,7 +143,7 @@ log:
 
 ```
 
-### Output message format
+### Output message format/example
 ```json
 {
   "sensor_name": "Airthings Wave Plus",
