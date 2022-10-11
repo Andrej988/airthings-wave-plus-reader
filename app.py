@@ -14,35 +14,81 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 import asyncio
+import time
+
 import logging
-import os
 
 from AirthingsWavePlus.airthings_wave_plus import AirthingsWavePlus
+from Config.yaml_config import Config
+from Kafka.kafka_publisher import KafkaPublisher
+from MQTT.mqtt_publisher import MqttPublisher
+
+start_time = time.time()
 
 
-async def read_and_process_sensor_data(wave_plus_bluetooth_mac_address, airthings_wave_plus_serial_number):
-    airthings_wave_sensor = AirthingsWavePlus(wave_plus_bluetooth_mac_address, airthings_wave_plus_serial_number)
-    sensor_measurement = await airthings_wave_sensor.read_sensor_data()
+async def __read_and_process_sensor_data(config):
+    log.debug("Airthings Wave Plus Bluetooth MAC Address: {0}".format(config.getAirthingsWavePlusBluetoothMACAddress()))
+    log.debug("Airthings Wave Plus Serial Number: {0}".format(config.getAirthingsWavePlusSerialNumber()))
 
-    print(sensor_measurement.toJson())
+    try:
+        airthings_wave_sensor = AirthingsWavePlus(
+            config.getAirthingsWavePlusBluetoothMACAddress(),
+            config.getAirthingsWavePlusSerialNumber())
+        sensor_measurement = await airthings_wave_sensor.read_sensor_data()
+    except Exception as e:
+        log.error("Error during retrieval of sensor data: {0}".format(str(e)))
 
-    publish_to_kafka = os.environ.get("PUBLISH_TO_KAFKA", "false").lower == "true"
-    log.info("Publish to Kafka: {}".format(publish_to_kafka))
+    log.info("Publish to Kafka: {}".format(config.getPublishToKafka()))
+    if config.getPublishToKafka():
+        try:
+            kafka_publisher = KafkaPublisher(
+                config.getKafkaBootstrapServers(),
+                config.getKafkaSecurityProtocol(),
+                config.getKafkaSASLMechanism(),
+                config.getKafkaSSLCAFile(),
+                config.getKafkaSASLUsername(),
+                config.getKafkaSASLPassword())
+            kafka_publisher.publish(config.getKafkaTopic(), sensor_measurement.toJson())
+        except Exception as e:
+            log.error("Error during publishing to Kafka: {0}".format(str(e)))
 
-    publish_to_mqtt = os.environ.get("PUBLISH_TO_MQTT", "false").lower == "true"
-    log.info("Publish to MQTT: {}".format(publish_to_mqtt))
+    log.info("Publish to MQTT: {0}".format(config.getPublishToMQTT()))
+    if config.getPublishToMQTT():
+        try:
+            mqtt_publisher = MqttPublisher(
+                broker_hostname=config.getMQTTHostname(),
+                port=config.getMQTTPort(),
+                connection_type=config.getMQTTConnectionType(),
+                username=config.getMQTTUsername(),
+                password=config.getMQTTPassword(),
+                tls_config=config.getMQTTConfigTLS()
+            )
+            mqtt_publisher.publish(config.getMQTTPublishTopic(),
+                                   sensor_measurement.toJson(),
+                                   config.getMQTTPublishQOS(),
+                                   config.getMQTTPublishRetainMsg())
+        except Exception as e:
+            log.error("Error during publishing to Kafka: {0}".format(str(e)))
+
+
+async def __process_function_periodically(interval, periodic_function, config):
+    while True:
+        time_elapsed = round(time.time() - start_time)
+        counter = int((time_elapsed / interval) + 1)
+        log.info("Execution counter: {0}".format(counter))
+        await asyncio.gather(
+            asyncio.sleep(interval),
+            periodic_function(config),
+        )
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+    app_config = Config("config.yml")
+    logging.basicConfig(level=app_config.getLoglevel())
     log = logging.getLogger("app")
 
-    airthings_wave_plus_bluetooth_mac_address = os.environ.get("AIRTHINGS_WAVE_PLUS_BLUETOOTH_MAC_ADDR")
-    log.debug("Airthings Wave Plus Bluetooth MAC Address: {}".format(airthings_wave_plus_bluetooth_mac_address))
+    log.info("Scheduler delay: {0}s".format(app_config.getSchedulerDelay()))
+    scheduler_delay = app_config.getSchedulerDelay() if app_config.getSchedulerDelay() is not None else 300
 
-    airthings_wave_plus_serial_number = os.environ.get("AIRTHINGS_WAVE_PLUS_SERIAL_NUMBER")
-    log.debug("Airthings Wave Plus Serial Number: {}".format(airthings_wave_plus_serial_number))
-
-    asyncio.run(read_and_process_sensor_data(airthings_wave_plus_bluetooth_mac_address,airthings_wave_plus_serial_number))
+    asyncio.run(__process_function_periodically(scheduler_delay, __read_and_process_sensor_data, app_config))

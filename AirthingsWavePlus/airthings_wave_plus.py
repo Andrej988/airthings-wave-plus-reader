@@ -17,7 +17,6 @@
 
 import asyncio
 import logging
-import os
 import struct
 from datetime import datetime
 
@@ -26,6 +25,8 @@ from bleak import BleakScanner, BleakClient
 from AirthingsWavePlus.sensor_measurement import SensorMeasurement
 from AirthingsWavePlus.sensor_measurements import SensorMeasurements
 
+SENSOR_NAME = "Airthings Wave Plus"
+
 # Handle 12: b42e2a68-ade7-11e4-89d3-123b93f75cba (Handle: 12): Current Sensor ValuesOAD Extended Control
 GATT_CHAR_HANDLE_CURRENT_SENSOR_VALUES = "b42e2a68-ade7-11e4-89d3-123b93f75cba"
 CURRENT_SENSOR_VALUES_FORMAT = '<BBBBHHHHHHHH'
@@ -33,8 +34,6 @@ CURRENT_SENSOR_VALUES_FORMAT = '<BBBBHHHHHHHH'
 # Handle 15: b42e2d06-ade7-11e4-89d3-123b93f75cba (Handle: 15): Access Control Point
 GATT_CHAR_HANDLE_ACCESS_CONTROL_POINT = "b42e2d06-ade7-11e4-89d3-123b93f75cba"
 ACCESS_CONTROL_POINT_RESPONSE_FORMAT = '<L12B6H'
-
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 
 class AirthingsWavePlus:
@@ -55,7 +54,6 @@ class AirthingsWavePlus:
 
         elif self.device_serial_number is not None:
             device = await self.__scan_for_device_serial_number()
-            print(device)
             self.sensor_measurement_data['sensor_bluetooth_mac_addr'] = device.address
             self.sensor_measurement_data['sensor_serial_number'] = self.device_serial_number
             return device
@@ -180,6 +178,7 @@ class AirthingsWavePlus:
 
     async def read_sensor_data(self) -> SensorMeasurements:
         log = logging.getLogger(self.class_name + ".read_sensor_data")
+        self.sensor_measurement_data['sensor_name'] = SENSOR_NAME
         device = await self.__scan_for_device()
 
         log.info("Connecting to device: {}".format(self.device_mac_address))
@@ -194,6 +193,7 @@ class AirthingsWavePlus:
 
             measurements = SensorMeasurements(self.sensor_measurement_data, self.control_point_data)
 
+            log.info("Sensor: {0}".format(measurements.getSensorName()))
             log.info("Sensor version: {0}".format(measurements.getSensorVersion()))
             log.info("Sensor Bluetooth MAC address: {0}".format(measurements.getSensorBluetoothMACAddress()))
             log.info("Sensor Serial Number: {0}".format(measurements.getSensorSerialNumber()))

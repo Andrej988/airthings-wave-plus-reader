@@ -14,11 +14,13 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import json
 
 
 class SensorMeasurements:
     def __init__(self, sensor_data, control_point_data):
+        self.sensor_name = sensor_data['sensor_name']
         self.sensor_version = sensor_data['sensor_version']
         self.sensor_bluetooth_mac_address = sensor_data['sensor_bluetooth_mac_addr']
         self.sensor_serial_number = sensor_data['sensor_serial_number']
@@ -36,6 +38,9 @@ class SensorMeasurements:
         self.measurement_periods = control_point_data['measurement_periods']
         self.voltage = control_point_data['voltage']
         self.battery_level = control_point_data['battery_level']
+
+    def getSensorName(self):
+        return self.sensor_name
 
     def getSensorBluetoothMACAddress(self):
         return self.sensor_bluetooth_mac_address
@@ -90,6 +95,7 @@ class SensorMeasurements:
 
     def toJson(self):
         measurement_object = {
+            "sensor_name": self.sensor_name,
             "sensor_bluetooth_mac_address": self.sensor_bluetooth_mac_address,
             "sensor_serial_number": self.sensor_serial_number,
             "sensor_version": self.sensor_version,
