@@ -34,6 +34,7 @@ This project was inspired by:
 
 ### Prerequisites
 * Airthings Wave Plus: Smart, battery operated, indoor air quality monitor (https://www.airthings.com/en/wave-plus)
+* BLE supported device (Bluetooth 4.0 or higher) to run application on
 * MQTT broker (optional)
 * Kafka broker (optional)
 
