@@ -22,8 +22,8 @@ import os
 from AirthingsWavePlus.airthings_wave_plus import AirthingsWavePlus
 
 
-async def read_and_process_sensor_data(wave_plus_bluetooth_mac_address):
-    airthings_wave_sensor = AirthingsWavePlus(wave_plus_bluetooth_mac_address)
+async def read_and_process_sensor_data(wave_plus_bluetooth_mac_address, airthings_wave_plus_serial_number):
+    airthings_wave_sensor = AirthingsWavePlus(wave_plus_bluetooth_mac_address, airthings_wave_plus_serial_number)
     sensor_measurement = await airthings_wave_sensor.read_sensor_data()
 
     print(sensor_measurement.toJson())
@@ -42,4 +42,7 @@ if __name__ == "__main__":
     airthings_wave_plus_bluetooth_mac_address = os.environ.get("AIRTHINGS_WAVE_PLUS_BLUETOOTH_MAC_ADDR")
     log.debug("Airthings Wave Plus Bluetooth MAC Address: {}".format(airthings_wave_plus_bluetooth_mac_address))
 
-    asyncio.run(read_and_process_sensor_data(airthings_wave_plus_bluetooth_mac_address))
+    airthings_wave_plus_serial_number = os.environ.get("AIRTHINGS_WAVE_PLUS_SERIAL_NUMBER")
+    log.debug("Airthings Wave Plus Serial Number: {}".format(airthings_wave_plus_serial_number))
+
+    asyncio.run(read_and_process_sensor_data(airthings_wave_plus_bluetooth_mac_address,airthings_wave_plus_serial_number))

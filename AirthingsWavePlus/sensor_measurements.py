@@ -18,9 +18,10 @@ import json
 
 
 class SensorMeasurements:
-    def __init__(self, sensor_bluetooth_mac_addr, sensor_data, control_point_data):
+    def __init__(self, sensor_data, control_point_data):
         self.sensor_version = sensor_data['sensor_version']
-        self.sensor_bluetooth_mac_address = sensor_bluetooth_mac_addr
+        self.sensor_bluetooth_mac_address = sensor_data['sensor_bluetooth_mac_addr']
+        self.sensor_serial_number = sensor_data['sensor_serial_number']
         self.timestamp = sensor_data['timestamp']
 
         self.temperature = sensor_data['temperature'];
@@ -35,6 +36,12 @@ class SensorMeasurements:
         self.measurement_periods = control_point_data['measurement_periods']
         self.voltage = control_point_data['voltage']
         self.battery_level = control_point_data['battery_level']
+
+    def getSensorBluetoothMACAddress(self):
+        return self.sensor_bluetooth_mac_address
+
+    def getSensorSerialNumber(self):
+        return self.sensor_serial_number
 
     def getSensorVersion(self):
         return self.sensor_version
@@ -82,8 +89,9 @@ class SensorMeasurements:
         return self.battery_level
 
     def toJson(self):
-        object = {
+        measurement_object = {
             "sensor_bluetooth_mac_address": self.sensor_bluetooth_mac_address,
+            "sensor_serial_number": self.sensor_serial_number,
             "sensor_version": self.sensor_version,
             "timestamp": self.timestamp.isoformat(),
             "temperature": {
@@ -119,5 +127,5 @@ class SensorMeasurements:
                 "unit": self.battery_level.unit
             }
         }
-        return json.dumps(object, indent=2, sort_keys=False, default=str, separators=(',', ':'))\
+        return json.dumps(measurement_object, indent=2, sort_keys=False, default=str, separators=(',', ':'))\
             .encode('utf-8')

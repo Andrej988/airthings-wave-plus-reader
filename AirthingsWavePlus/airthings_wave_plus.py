@@ -38,25 +38,70 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 
 class AirthingsWavePlus:
-    def __init__(self, wave_plus_bluetooth_mac_address):
+    def __init__(self, wave_plus_bluetooth_mac_address, wave_plus_serial_number):
         self.class_name = "AirthingsWavePlus"
         self.control_point_data = {}
         self.sensor_measurement_data = {}
         self.event = set()
         self.device_mac_address = wave_plus_bluetooth_mac_address
+        self.device_serial_number = wave_plus_serial_number
 
     async def __scan_for_device(self):
-        # advertisements = await BleakScanner.discover(timeout=5)
-        # for advertisement in advertisements:
-        #    print(advertisement)
+        if self.device_mac_address is not None:
+            device = await self.__scan_for_device_mac_address()
+            self.sensor_measurement_data['sensor_bluetooth_mac_addr'] = self.device_mac_address
+            self.sensor_measurement_data['sensor_serial_number'] = self.__extract_serial_number(device)
+            return device
 
-        log = logging.getLogger(self.class_name + ".__scan_for_device")
-        log.info("Scanning for device: {}".format(self.device_mac_address))
+        elif self.device_serial_number is not None:
+            device = await self.__scan_for_device_serial_number()
+            print(device)
+            self.sensor_measurement_data['sensor_bluetooth_mac_addr'] = device.address
+            self.sensor_measurement_data['sensor_serial_number'] = self.device_serial_number
+            return device
+
+        else:
+            raise Exception("Missing device information. "
+                            "Please enter either device bluetooth MAC address or serial number.")
+
+    async def __scan_for_device_mac_address(self):
+        log = logging.getLogger(self.class_name + ".__scan_for_device_mac_address")
+        log.info("Scanning for device with MAC Address: {}".format(self.device_mac_address))
         device = await BleakScanner.find_device_by_address(self.device_mac_address)
         if device is None:
-            raise Exception("Device not found...")
+            raise Exception("Device not found!!!")
         log.info("Scanning complete [device found]...")
         return device
+
+    async def __scan_for_device_serial_number(self):
+        log = logging.getLogger(self.class_name + ".__scan_for_device_serial_number")
+        log.info("Scanning for device with serial number: {}".format(self.device_serial_number))
+        advertisements = await BleakScanner.discover(timeout=5)
+        log.info("Scanning complete...")
+        device = None
+
+        for advertisement in advertisements:
+            log.info("Available device: {}".format(advertisement))
+            if 820 in advertisement.metadata['manufacturer_data']:
+                log.debug(advertisement.metadata['manufacturer_data'])
+                serial_number = self.__extract_serial_number(advertisement)
+                if serial_number == self.device_serial_number:
+                    log.info("Device found: {0}".format(advertisement))
+                    print(advertisement)
+                    device = advertisement
+
+        if device is None:
+            raise Exception("Device not found!!!")
+        return device
+
+    def __extract_serial_number(self, device):
+        log = logging.getLogger(self.class_name + ".__extract_serial_number")
+        log.debug(device.metadata['manufacturer_data'])
+        serial_number_bytes = device.metadata['manufacturer_data'].get(820)
+        log.debug(serial_number_bytes)
+        serial_number = struct.unpack_from('<I', serial_number_bytes)
+        log.info("Extracted serial number: {0}".format(serial_number[0]))
+        return serial_number[0]
 
     def __log_client_characteristics(self, client):
         log = logging.getLogger(self.class_name + ".__log_client_characteristics")
@@ -147,10 +192,11 @@ class AirthingsWavePlus:
             await self.__retrieve_and_process_access_control_point_data(client)
             await self.__retrieve_and_process_current_sensor_measurement_data(client)
 
-            measurements = SensorMeasurements(
-                self.device_mac_address, self.sensor_measurement_data, self.control_point_data)
+            measurements = SensorMeasurements(self.sensor_measurement_data, self.control_point_data)
 
             log.info("Sensor version: {0}".format(measurements.getSensorVersion()))
+            log.info("Sensor Bluetooth MAC address: {0}".format(measurements.getSensorBluetoothMACAddress()))
+            log.info("Sensor Serial Number: {0}".format(measurements.getSensorSerialNumber()))
             log.info("Measurement timestamp: {0}".format(measurements.getTimestamp().isoformat()))
             log.info("Temperature: {0} {1}".format(
                 measurements.getTemperature().value,
