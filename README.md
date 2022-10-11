@@ -57,8 +57,91 @@ There are two scanning modes available:
   * Serial number can be found under the magnetic backplate of your Airthings Wave Plus
 
 ### Configuration
-Configuration of application is done via YAML file named config.yml.
-You can use configuration template file (config-template.yml) which includes all available configuration options. Note: Final configuration file should be saved as config.yml.
+Configuration is done via YAML file named config.yml.
+You can use the following configuration file template which includes all available configuration options.
+Configuration file can also be found in the project under config-template.yml.
+Note: Final configuration file should be saved as config.yml.
+
+```yaml
+# Configuration file as a template. Provides all available configuration options. Final config file should be named config.yml
+
+# Section for airthings wave plus configuration
+airthings_wave_plus:
+  # Bluetooth configuration
+  bluetooth:
+    # Bluetooth MAC adress of Airthings Wave Plus
+    # Application will scan for device either by Airthings Wave Plus bluetooth MAC address or Airthings Wave Plus serial Number
+    mac_address:
+  # 10-digit Airthings Wave Plus serial number: Can be found under the magnetic backplate of your Airthings Wave Plus
+  # Application will scan for device either by Airthings Wave Plus bluetooth MAC address or Airthings Wave Plus serial Number
+  serial_number:
+
+# Sectiom for scheduler configuration
+scheduler:
+  # Delay in seconds (Keep in mind that Airthings Wave Plus will refresh sensor measurements every 5minutes)
+  delay: 300
+
+# Section for configuration of publishers
+publishers:
+  #Section for publishing to Apache Kafka
+  kafka:
+    # Is publishing to Kafka enabled [True | False]
+    enabled: False
+    # Kafka bootstrap servers. Multiple servers can be added separated by comma e.g.: "IP:PORT,IP:PORT,IP:PORT"
+    bootstrap_servers:
+    # Topic where message should be published
+    topic:
+    # Security protocol: e.g. SASL_SSL
+    security_protocol:
+    # SSL CA cert file path (with extension), e.g.: "./CARoot.pem"
+    ssl_ca_cert_file:
+    # SASL Mechanism
+    sasl_mechanism:
+    # SASL Username
+    sasl_username:
+    # SASL Password
+    sasl_password:
+
+  #Section for publishing to MQTT
+  mqtt:
+    # Is publishing to MQTT enabled [True | False]
+    enabled: False
+    # MQTT Broker hostname
+    hostname:
+    # Port used for connection to broker
+    port:
+    # Connection type: [MQTT | TLS]
+    connection_type:
+    # Section for TLS related options (For more information check Python Paho Documentation)
+    tls:
+      # A string path to the Certificate Authority certificate files that are to be treated as trusted by this client. Leave empty or fill None to use default.
+      ca_certs:
+      # Strings pointing to the PEM encoded client certificate and private keys respectively. Leave empty or fill None to use default.
+      certfile:
+      # Strings pointing to the PEM encoded client certificate and private keys respectively. Leave empty or fill None to use default.
+      keyfile:
+      # Defines the certificate requirements that the client imposes on the broker. Leave empty or fill None to use default.
+      cert_req:
+      # Specifies the version of the SSL/TLS protocol to be used. Leave empty or fill None to use default.
+      tls_version:
+      # A string specifying which encryption ciphers are allowable for this connection. Leave empty or fill None to use default.
+      ciphers:
+    # Username for brokers with authentication
+    username:
+    #Password for brokers with authentication
+    password:
+    # Topic where message should be published
+    topic:
+    # QOS setting to be used when publishing (default: 0)
+    qos:
+    # Set the message to be retained [True | False]
+    retain_msg: False
+
+# Application logging configuration
+log:
+  level: INFO
+
+```
 
 ### Output message format
 ```json
