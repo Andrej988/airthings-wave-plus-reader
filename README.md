@@ -1,7 +1,7 @@
 # Airthings Wave Plus Reader/Publisher
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This project periodically connects to Airthings Wave Plus sensor measurement over Bluetooth Low Energy (BLE), reads sensor data and publish it to MQTT and/or Apache Kafka.
+This project periodically connects to Airthings Wave Plus IAQ (Indoor Air Quality) monitor over Bluetooth Low Energy (BLE), reads sensor measurements data and publish it to MQTT and/or Apache Kafka.
 
 Airthings Wave Plus is a smart IAQ monitor with Radon detection, including sensosr for temperature, humidity, air pressure, TVOCs and CO2.
 
