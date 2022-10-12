@@ -96,7 +96,14 @@ class Config:
     def getMQTTPublishRetainMsg(self):
         return self.data.get('publishers').get('mqtt').get('retain_msg')
 
-    def getLoglevel(self):
-        return self.data.get('log').get('level')
+    def get_log_console_level(self):
+        return self.data.get('log').get('console').get('level')
 
+    def get_log_file_log_enabled(self):
+        return self.data.get('log').get('file').get('log').get('enabled')
 
+    def get_log_file_log_level(self):
+        return self.data.get('log').get('file').get('log').get('level')
+
+    def get_log_file_err_enabled(self):
+        return self.data.get('log').get('file').get('err').get('enabled')
