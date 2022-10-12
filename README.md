@@ -76,19 +76,19 @@ The following GATT characteristics are used for retrieving data:
 | b42e2d06-ade7-11e4-89d3-123b93f75cba (Handle: 15): Access Control Point                        | Used for reading voltage which is used for battery level calculation|
 
 ### Configuration
-Configuration is done via YAML file named config.yml.
+Configuration is done via YAML file named config.yml or config.yaml.
 You can use the following configuration file template which includes all available configuration options.
 Configuration file can also be found in the project under config-template.yml.
-Note: Final configuration file should be saved as config.yml.
+Note: Final configuration file should be saved as config.yml or config.yaml.
 
 ```yaml
-# Configuration file as a template. Provides all available configuration options. Final config file should be named config.yml
+# Configuration file as a template. Provides all available configuration options. Final config file should be named config.yml or config.yaml
 
 # Section for airthings wave plus configuration
 airthings_wave_plus:
   # Bluetooth configuration
   bluetooth:
-    # Bluetooth MAC adress of Airthings Wave Plus
+    # Bluetooth MAC address of Airthings Wave Plus
     # Application will scan for device either by Airthings Wave Plus bluetooth MAC address or Airthings Wave Plus serial Number
     mac_address:
   # 10-digit Airthings Wave Plus serial number: Can be found under the magnetic backplate of your Airthings Wave Plus
@@ -154,7 +154,7 @@ publishers:
     # QOS setting to be used when publishing (default: 0)
     qos:
     # Set the message to be retained [True | False]
-    retain_msg: False
+    retain_msg:
 
 # Application logging configuration
 log:
@@ -172,6 +172,8 @@ log:
     err:
       # Is .err file logging enabled (file logger which only record errors)
       enabled: True
+
+
 ```
 
 ### Output message format/example
