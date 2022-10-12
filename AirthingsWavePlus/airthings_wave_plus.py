@@ -125,7 +125,6 @@ class AirthingsWavePlus:
     def __access_control_point_notification_handler(self, sender, control_point_raw_data):
         self.event.set()
         log = logging.getLogger(self.class_name + ".__notification_handler")
-        log.debug("Sender: {}".format(sender))
         log.debug("Data: {}".format(control_point_raw_data))
 
         if control_point_raw_data is None:
