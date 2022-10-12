@@ -19,13 +19,17 @@ import json
 
 
 class SensorMeasurements:
-    def __init__(self, sensor_data, control_point_data):
-        self.sensor_name = sensor_data['sensor_name']
-        self.sensor_version = sensor_data['sensor_version']
-        self.sensor_bluetooth_mac_address = sensor_data['sensor_bluetooth_mac_addr']
-        self.sensor_serial_number = sensor_data['sensor_serial_number']
-        self.timestamp = sensor_data['timestamp']
+    def __init__(self, device_data, sensor_data, control_point_data):
+        self.device_name = device_data['name']
+        self.device_model = device_data['model']
+        self.device_bluetooth_mac_address = device_data['bluetooth_mac_addr']
+        self.device_serial_number = device_data['serial_number']
+        self.device_hardware_revision = device_data['hardware_revision']
+        self.device_firmware_revision = device_data['firmware_revision']
+        self.device_manufacturer_name = device_data['manufacturer_name']
+        self.device_sensor_version = device_data['sensor_version']
 
+        self.timestamp = sensor_data['timestamp']
         self.temperature = sensor_data['temperature'];
         self.humidity = sensor_data['humidity']
         self.pressure = sensor_data['pressure']
@@ -33,104 +37,122 @@ class SensorMeasurements:
         self.radon_long_term_avg = sensor_data['radon_long_term_avg']
         self.co2_level = sensor_data['co2_level']
         self.voc_level = sensor_data['voc_level']
+
         self.illuminance = control_point_data['illuminance']
         self.ambient_light = control_point_data['ambient_light']
         self.measurement_periods = control_point_data['measurement_periods']
-        self.voltage = control_point_data['voltage']
-        self.battery_level = control_point_data['battery_level']
+        self.device_voltage = control_point_data['voltage']
+        self.device_battery_level = control_point_data['battery_level']
 
-    def getSensorName(self):
-        return self.sensor_name
+    def get_device_name(self):
+        return self.device_name
 
-    def getSensorBluetoothMACAddress(self):
-        return self.sensor_bluetooth_mac_address
+    def get_device_model(self):
+        return self.device_model
 
-    def getSensorSerialNumber(self):
-        return self.sensor_serial_number
+    def get_device_bluetooth_mac_address(self):
+        return self.device_bluetooth_mac_address
 
-    def getSensorVersion(self):
-        return self.sensor_version
+    def get_device_serial_number(self):
+        return self.device_serial_number
 
-    def getSensorBluetoothMACAddress(self):
-        return self.sensor_bluetooth_mac_address
+    def get_device_sensor_version(self):
+        return self.device_sensor_version
 
-    def getTimestamp(self):
+    def get_device_hardware_revision(self):
+        return self.device_hardware_revision
+
+    def get_device_firmware_revision(self):
+        return self.device_firmware_revision
+
+    def get_device_manufacturer_name(self):
+        return self.device_manufacturer_name
+
+    def get_timestamp(self):
         return self.timestamp
 
-    def getTemperature(self):
+    def get_temperature(self):
         return self.temperature
 
-    def getHumidity(self):
+    def get_humidity(self):
         return self.humidity
 
-    def getPressure(self):
+    def get_pressure(self):
         return self.pressure
 
-    def getRadonShortTermAverage(self):
+    def get_radon_short_term_average(self):
         return self.radon_short_term_avg
 
-    def getRadonLongTermAverage(self):
+    def get_radon_long_term_average(self):
         return self.radon_long_term_avg
 
-    def getCO2Level(self):
+    def get_co2_level(self):
         return self.co2_level
 
-    def getVOCLevel(self):
+    def get_voc_level(self):
         return self.voc_level
 
-    def getIlluminance(self):
+    def get_illuminance(self):
         return self.illuminance
 
-    def getAmbientLight(self):
+    def get_ambient_light(self):
         return self.ambient_light
 
-    def getMeasurementPeriods(self):
+    def get_measurement_periods(self):
         return self.measurement_periods
 
-    def getVoltage(self):
-        return self.voltage
+    def get_device_voltage(self):
+        return self.device_voltage
 
-    def getBatteryLevel(self):
-        return self.battery_level
+    def get_device_battery_level(self):
+        return self.device_battery_level
 
-    def toJson(self):
+    def to_json(self):
         measurement_object = {
-            "sensor_name": self.sensor_name,
-            "sensor_bluetooth_mac_address": self.sensor_bluetooth_mac_address,
-            "sensor_serial_number": self.sensor_serial_number,
-            "sensor_version": self.sensor_version,
-            "timestamp": self.timestamp.isoformat(),
-            "temperature": {
-                "value": self.temperature.value,
-                "unit": self.temperature.unit
+            "device": {
+                "name": self.device_name,
+                "model": self.device_model,
+                "manufacturer": self.device_manufacturer_name,
+                "serial_num": self.device_serial_number,
+                "bluetooth_MAC_addr": self.device_bluetooth_mac_address,
+                "sensor_version": self.device_sensor_version,
+                "hardware_revision": self.device_hardware_revision,
+                "firmware_revision": self.device_firmware_revision,
+                "battery_level": {
+                    "value": self.device_battery_level.value,
+                    "unit": self.device_battery_level.unit
+                }
             },
-            "humidity": {
-                "value": self.humidity.value,
-                "unit": self.humidity.unit
-            },
-            "pressure": {
-                "value": self.pressure.value,
-                "unit": self.pressure.unit
-            },
-            "radon_short_term_avg": {
-                "value": self.radon_short_term_avg.value,
-                "unit": self.radon_short_term_avg.unit
-            },
-            "radon_long_term_avg": {
-                "value": self.radon_long_term_avg.value,
-                "unit": self.radon_long_term_avg.unit
-            },
-            "co2_level": {
-                "value": self.co2_level.value,
-                "unit": self.co2_level.unit
-            },
-            "voc_level": {
-                "value": self.voc_level.value,
-                "unit": self.voc_level.unit
-            },
-            "battery_level": {
-                "value": self.battery_level.value,
-                "unit": self.battery_level.unit
+            "measurements": {
+                "timestamp": self.timestamp.isoformat(),
+                "temperature": {
+                    "value": self.temperature.value,
+                    "unit": self.temperature.unit
+                },
+                "humidity": {
+                    "value": self.humidity.value,
+                    "unit": self.humidity.unit
+                },
+                "pressure": {
+                    "value": self.pressure.value,
+                    "unit": self.pressure.unit
+                },
+                "radon_short_term_avg": {
+                    "value": self.radon_short_term_avg.value,
+                    "unit": self.radon_short_term_avg.unit
+                },
+                "radon_long_term_avg": {
+                    "value": self.radon_long_term_avg.value,
+                    "unit": self.radon_long_term_avg.unit
+                },
+                "co2_level": {
+                    "value": self.co2_level.value,
+                    "unit": self.co2_level.unit
+                },
+                "voc_level": {
+                    "value": self.voc_level.value,
+                    "unit": self.voc_level.unit
+                }
             }
         }
         return json.dumps(measurement_object, indent=2, sort_keys=False, default=str, separators=(',', ':'))\
