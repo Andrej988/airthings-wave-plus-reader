@@ -1,10 +1,10 @@
-# Configuration file as a template. Provides all available configuration options. Final config file should be named config.yml
+# Configuration file as a template. Provides all available configuration options. Final config file should be named config.yml or config.yaml
 
 # Section for airthings wave plus configuration
 airthings_wave_plus:
   # Bluetooth configuration
   bluetooth:
-    # Bluetooth MAC adress of Airthings Wave Plus
+    # Bluetooth MAC address of Airthings Wave Plus
     # Application will scan for device either by Airthings Wave Plus bluetooth MAC address or Airthings Wave Plus serial Number
     mac_address:
   # 10-digit Airthings Wave Plus serial number: Can be found under the magnetic backplate of your Airthings Wave Plus

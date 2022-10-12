@@ -52,7 +52,7 @@ async def __read_and_process_sensor_data(config):
                 config.getKafkaSSLCAFile(),
                 config.getKafkaSASLUsername(),
                 config.getKafkaSASLPassword())
-            kafka_publisher.publish(config.getKafkaTopic(), sensor_measurement.toJson())
+            kafka_publisher.publish(config.getKafkaTopic(), sensor_measurement.to_json())
         except Exception as e:
             log.error("Error during publishing to Kafka: {0}".format(str(e)))
 
@@ -68,7 +68,7 @@ async def __read_and_process_sensor_data(config):
                 tls_config=config.getMQTTConfigTLS()
             )
             mqtt_publisher.publish(config.getMQTTPublishTopic(),
-                                   sensor_measurement.toJson(),
+                                   sensor_measurement.to_json(),
                                    config.getMQTTPublishQOS(),
                                    config.getMQTTPublishRetainMsg())
         except Exception as e:
