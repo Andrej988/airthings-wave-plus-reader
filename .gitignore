@@ -131,6 +131,7 @@ dmypy.json
 # Certificates and config file
 *.pem
 config.yml
+config.yaml
 
 # Log files
 *.log
