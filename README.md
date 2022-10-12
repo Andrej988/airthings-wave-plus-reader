@@ -3,7 +3,7 @@
 
 This project periodically connects to Airthings Wave Plus IAQ (Indoor Air Quality) monitor over Bluetooth Low Energy (BLE), reads sensor measurements data and publish it to MQTT and/or Apache Kafka.
 
-Airthings Wave Plus is a smart IAQ monitor with Radon detection, including sensosr for temperature, humidity, air pressure, TVOCs and CO2.
+Airthings Wave Plus is a smart IAQ monitor with Radon detection, including sensors for temperature, humidity, air pressure, TVOCs and CO2.
 
 This project was inspired by:
 * https://github.com/Airthings/waveplus-reader
@@ -158,8 +158,20 @@ publishers:
 
 # Application logging configuration
 log:
-  level: INFO
-
+  console:
+    # Log level for console (stdout) logging [True | False]
+    level: INFO
+  # Section for file loggers
+  file:
+    # Logging to .log files
+    log:
+      # Is .log file logging enabled [True | False]
+      enabled: True
+      # Log level for .log file logger
+      level: DEBUG
+    err:
+      # Is .err file logging enabled (file logger which only record errors)
+      enabled: True
 ```
 
 ### Output message format/example
