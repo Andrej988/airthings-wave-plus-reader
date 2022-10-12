@@ -70,10 +70,15 @@ There are two scanning modes available:
 
 ### BLE GATT Characteristics
 The following GATT characteristics are used for retrieving data:
-| Characteristic                            | Description |
-|-------------------------------------------|-------------|
-| b42e2a68-ade7-11e4-89d3-123b93f75cba (Handle: 12): Current Sensor ValuesOAD Extended Control   | Used for reading current sensor values |
-| b42e2d06-ade7-11e4-89d3-123b93f75cba (Handle: 15): Access Control Point                        | Used for reading voltage which is used for battery level calculation|
+| UUID | Handle | Description | Comment |
+|------|--------|-------------|---------|
+| 00002a00-0000-1000-8000-00805f9b34fb | 2 | Device Name | |
+| b42e2a68-ade7-11e4-89d3-123b93f75cba | 12 | Current Sensor ValuesOAD Extended Control | Used for reading current sensor values |
+| b42e2d06-ade7-11e4-89d3-123b93f75cba | 15 | Access Control Point | Used for reading additional data: e.g. voltage which is used for battery level calculation|
+| 00002a24-0000-1000-8000-00805f9b34fb | 39 | Model Number String | |
+| 00002a26-0000-1000-8000-00805f9b34fb | 43 | Firmware Revision String | |
+| 00002a27-0000-1000-8000-00805f9b34fb | 45 | Hardware Revision String | |
+| 00002a29-0000-1000-8000-00805f9b34fb | 47 | Manufacturer Name String | |
 
 ### Configuration
 Configuration is done via YAML file named config.yml or config.yaml.
@@ -179,42 +184,50 @@ log:
 ### Output message format/example
 ```json
 {
-  "sensor_name": "Airthings Wave Plus",
-  "sensor_bluetooth_mac_address": "REDACTED",
-  "sensor_serial_number": "REDACTED",
-  "sensor_version": 1,
-  "timestamp": "2022-10-11T19:24:43.424432",
-  "temperature": {
-    "value": 25.77,
-    "unit": "degC"
+  "device": {
+    "name": "Airthings Wave+",
+    "model": "2930",
+    "manufacturer": "Airthings AS",
+    "serial_num": "REDACTED",
+    "bluetooth_MAC_addr": "REDACTED",
+    "sensor_version": 1,
+    "hardware_revision": "REV A",
+    "firmware_revision": "G-BLE-1.4.5-beta+0",
+    "battery_level": {
+      "value": 100,
+      "unit": "%"
+    }
   },
-  "humidity": {
-    "value": 50.5,
-    "unit": "%rH"
-  },
-  "pressure": {
-    "value": 992.86,
-    "unit": "hPa"
-  },
-  "radon_short_term_avg": {
-    "value": 90,
-    "unit": "Bq/m3"
-  },
-  "radon_long_term_avg": {
-    "value": 100,
-    "unit": "Bq/m3"
-  },
-  "co2_level": {
-    "value": 925,
-    "unit": "ppm"
-  },
-  "voc_level": {
-    "value": 256,
-    "unit": "ppb"
-  },
-  "battery_level": {
-    "value": 100,
-    "unit": "%"
+  "measurements": {
+    "timestamp": "2022-10-12T22:00:44.559625",
+    "temperature": {
+      "value": 25.06,
+      "unit": "degC"
+    },
+    "humidity": {
+      "value": 45.5,
+      "unit": "%rH"
+    },
+    "pressure": {
+      "value": 992.68,
+      "unit": "hPa"
+    },
+    "radon_short_term_avg": {
+      "value": 90,
+      "unit": "Bq/m3"
+    },
+    "radon_long_term_avg": {
+      "value": 100,
+      "unit": "Bq/m3"
+    },
+    "co2_level": {
+      "value": 685,
+      "unit": "ppm"
+    },
+    "voc_level": {
+      "value": 46,
+      "unit": "ppb"
+    }
   }
 }
 ```
