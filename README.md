@@ -69,7 +69,7 @@ There are two scanning modes available:
   * Serial number can be found under the magnetic backplate of your Airthings Wave Plus
 
 ### BLE GATT Characteristics
-The following GAAT characteristics are used for retrieving data:
+The following GATT characteristics are used for retrieving data:
 | Characteristic                            | Description |
 |-------------------------------------------|-------------|
 | b42e2a68-ade7-11e4-89d3-123b93f75cba (Handle: 12): Current Sensor ValuesOAD Extended Control   | Used for reading current sensor values |
