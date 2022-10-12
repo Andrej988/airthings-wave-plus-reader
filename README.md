@@ -11,14 +11,25 @@ This project was inspired by:
 
 **Table of contents**
 - [Airthings Wave Plus Reader/Publisher](#airthings-wave-plus-readerpublisher)
+- [Background](#background)
 - [Sensor data description](#sensor-data-description)
 - [Prerequisites](#prerequisites)
 - [Python Dependencies](#python-dependencies)
 - [BLE Scanning](#ble-scanning)
+- [BLE GATT Characteristics](#ble-gatt-characteristics)
 - [Configuration](#configuration)
 - [Output message format/example](#output-message-formatexample)
 - [Testing](#testing)
 - [License](#license)
+
+### Background
+Airthings provide a nice looking web interface to visualize current and historical measurement readings from Airthings Wave Plus, but as the device itself does not support Wi-Fi you need an auxiliary bluetooth supported device (e.g. Smartphone) and Airthings app to poll the readings from the sensor and send it to the cloud.
+The problematic part with this approach in my opinion is the following:
+1. The need to have bluetooth enabled constantly on your auxiliary device
+2. Missing/Lost reading when you are away from home (sensor)
+3. Ownership of the data
+
+There are already some implementations of airthings wave plus reader available (also from Airthings) but most of them use bluepy Python bluetooth library, which does not work on Windows environments. In my case I have a Windows machine which is in vicinity of Airthings Wave Plus device so I needed a solution which uses Windows OS supported bluetooth library.
 
 ### Sensor data description
 | Sensor                        | Unit of measurement                 | Comments                                                       |
@@ -56,6 +67,13 @@ There are two scanning modes available:
   * You can use device-scanner.py for scanning all available devices to find out MAC address
 * Scanning for predefined 10-digit Airthings Wave Plus Serial Number
   * Serial number can be found under the magnetic backplate of your Airthings Wave Plus
+
+### BLE GATT Characteristics
+The following GAAT characteristics are used for retrieving data:
+| Characteristic                            | Description |
+|-------------------------------------------|-------------|
+| b42e2a68-ade7-11e4-89d3-123b93f75cba (Handle: 12): Current Sensor ValuesOAD Extended Control   | Used for reading current sensor values |
+| b42e2d06-ade7-11e4-89d3-123b93f75cba (Handle: 15): Access Control Point                        | Used for reading voltage which is used for battery level calculation|
 
 ### Configuration
 Configuration is done via YAML file named config.yml.
