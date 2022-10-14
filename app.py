@@ -130,8 +130,8 @@ if __name__ == "__main__":
         err_file_handler = TimedRotatingFileHandler("./log/app.err", when="midnight", interval=1)
         err_file_handler.setLevel(level=logging.ERROR)
         err_file_handler.setFormatter(formatter)
-        err_file_handler.suffix = "%Y%m%d"
-        log_file_handler.namer = lambda name: name.replace(".err", "") + ".err"
+        err_file_handler.suffix = "%Y-%m-%d"
+        err_file_handler.namer = lambda name: name.replace(".err", "") + ".err"
         logging.getLogger('').addHandler(err_file_handler)
 
     # Configure scheduler
