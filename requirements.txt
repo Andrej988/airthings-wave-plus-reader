@@ -1,0 +1,4 @@
+bleak==0.19.5
+kafka_python3==3.0.0
+paho_mqtt==1.6.1
+PyYAML==6.0
